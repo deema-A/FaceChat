@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Display Webcam Stream</title>
+
+    <style>
+        #container {
+            margin: 0px auto;
+            width: 500px;
+            height: 375px;
+            border: 10px #333 solid;
+        }
+
+        #videoElement {
+            width: 500px;
+            height: 375px;
+            background-color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <video autoplay="true" id="videoElement">
+
+        </video>
+    </div>
+
+
+    <script>
+        var video = document.querySelector("#videoElement");
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    video.play()
+                })
+                .catch(function (err0r) {
+                    console.log("Something went wrong!");
+                });
+        }
+
+        function stop(e) {
+            var stream = video.srcObject;
+            var tracks = stream.getTracks();
+
+            for (var i = 0; i < tracks.length; i++) {
+                var track = tracks[i];
+                track.stop();
+            }
+
+            video.srcObject = null;
+        }
+
+        // var videoElement = document.querySelector('video');
+        // var audioSelect = document.querySelector('select#audioSource');
+        // var videoSelect = document.querySelector('select#videoSource');
+
+        // audioSelect.onchange = getStream;
+        // videoSelect.onchange = getStream;
+
+        // getStream().then(getDevices).then(gotDevices);
+
+        // function getDevices() {
+        //     // AFAICT in Safari this only gets default devices until gUM is called :/
+        //     return navigator.mediaDevices.enumerateDevices();
+        // }
+
+        // function gotDevices(deviceInfos) {
+        //     window.deviceInfos = deviceInfos; // make available to console
+        //     console.log('Available input and output devices:', deviceInfos);
+        //     for (const deviceInfo of deviceInfos) {
+        //         const option = document.createElement('option');
+        //         option.value = deviceInfo.deviceId;
+        //         if (deviceInfo.kind === 'audioinput') {
+        //             option.text = deviceInfo.label || `Microphone ${audioSelect.length + 1}`;
+        //             audioSelect.appendChild(option);
+        //         } else if (deviceInfo.kind === 'videoinput') {
+        //             option.text = deviceInfo.label || `Camera ${videoSelect.length + 1}`;
+        //             videoSelect.appendChild(option);
+        //         }
+        //     }
+        // }
+
+        // function getStream() {
+        //     if (window.stream) {
+        //         window.stream.getTracks().forEach(track => {
+        //             track.stop();
+        //         });
+        //     }
+        //     const audioSource = audioSelect.value;
+        //     const videoSource = videoSelect.value;
+        //     const constraints = {
+        //         audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
+        //         video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+        //     };
+        //     return navigator.mediaDevices.getUserMedia(constraints).
+        //         then(gotStream).catch(handleError);
+        // }
+
+        // function gotStream(stream) {
+        //     window.stream = stream; // make stream available to console
+        //     audioSelect.selectedIndex = [...audioSelect.options].
+        //         findIndex(option => option.text === stream.getAudioTracks()[0].label);
+        //     videoSelect.selectedIndex = [...videoSelect.options].
+        //         findIndex(option => option.text === stream.getVideoTracks()[0].label);
+        //     videoElement.srcObject = stream;
+        // }
+
+        // function handleError(error) {
+        //     console.error('Error: ', error);
+        // }
+    </script>
+</body>
+
+</html>
