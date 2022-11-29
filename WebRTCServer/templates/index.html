@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Title</title>
 
     <style>
@@ -15,26 +15,41 @@
             visibility: hidden;
         }
     </style>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+
+
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js'></script>
 </head>
 
 <body>
+
+    Start the conversation: <button>Start</button>
 
     <div id="container">
         <video hidden autoplay playsinline id="videoElement"></video>
         <canvas hidden id="canvas" width="400" height="300"></canvas>
     </div>
 
-    <div class='videoReturn'>
-        <h1>Video Streaming</h1>
-        <img id="photo" width="400" height="300">
-    </div>
+    <audio controls>
+        <source src="{{ url_for('audio') }}" type="audio/x-wav;codec=pcm">
+        Your browser does not support the audio element.
+    </audio>
 
-    using backend to process the image.
 
-    <script type="text/javascript" charset="utf-8">
+    <!-- 
+        <div class='videoReturn'>
+            <h1>Video Streaming</h1>
+            <img id="photo" width="400" height="300">
+        </div>
+
+        using backend to process the image. -->
+
+
+
+    <script>
         // $('#camera').css('visibility', 'hidden');
 
         var socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
@@ -52,10 +67,9 @@
 
 
         if (navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(function (stream) {
-                    video_element.srcObject = stream;
-                    // video.play();
+
                 })
                 .catch(function (err0r) {
 
@@ -66,7 +80,12 @@
         setInterval(() => {
             width = video_element.width;
             height = video_element.height;
+
+
             context.drawImage(video_element, 0, 0, width, height);
+
+
+
             var data = canvas.toDataURL('image/jpeg', 0.5);
             // var frame = capture(video_element, 1)
             // var data = frame.toDataURL('image/jpeg', 0.5);
@@ -91,8 +110,6 @@
         // video.srcObject = null;
 
     </script>
-
-
 </body>
 
 </html>

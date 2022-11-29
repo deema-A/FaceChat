@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>AudioServer2Client</title>
+
+    <style>
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js'></script>
+
+    <!-- <script src="{{ url_for('static', filename='js/lowLag.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/soundmanager2.js') }}"></script> -->
+    <!-- <script src="//code.jquery.com/jquery-1.8.0.min.js"></script> -->
+
+
+    <!-- RecordRTC -->
+    <!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
+</head>
+
+<body>
+
+    Test
+
+    <!-- <audio id="myAudio">
+        <source src="{{ url_for('audio_back') }}" type="audio/x-wav;codec=pcm">
+        Your browser does not support the audio element.
+    </audio> -->
+
+    <button onclick="start_streaming()" type="button">Start</button>
+
+</body>
+
+<script>
+    var audio = new Audio();
+    audio.preload = "none";
+    audio.autoplay = false;
+
+    function start_streaming() {
+        console.log("start recording!")
+        audio.src = "{{ url_for('audio_back') }}";
+        audio.play();
+    }
+
+</script>
+
+</html>

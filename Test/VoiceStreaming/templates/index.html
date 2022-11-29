@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Sound</h1>
+    <!-- <audio src="/play_wav" id="myAudio" autoplay loop controls>
+        <p>If you are reading this, it is because your browser does not support the audio element.     </p>
+    </audio> -->
+
+    <!-- <iframe src="/play_wav" allow="autoplay" id="iframeAudio">
+    </iframe>  -->
+    <audio id="player" autoplay loop>
+        <source src="/play_wav">
+    </audio>
+</body>
+
+<!-- <button onclick="myFunction()">Try it</button> -->
+
+<script>
+    var x = document.getElementById("myAudio");
+    x.autoplay = true;
+    x.load();
+</script>
+
+</html>

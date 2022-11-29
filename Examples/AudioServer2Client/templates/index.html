@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>AudioServer2Client</title>
+
+    <style>
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js'></script>
+
+    <!-- <script src="{{ url_for('static', filename='js/lowLag.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/soundmanager2.js') }}"></script> -->
+    <!-- <script src="//code.jquery.com/jquery-1.8.0.min.js"></script> -->
+
+
+    <!-- RecordRTC -->
+    <!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
+</head>
+
+<body>
+
+    Test
+    <button onclick="start_streaming()" type="button">Start</button>
+
+</body>
+
+<script>
+
+    let audioCtx;
+
+    // Stereo
+    let channels = 1;
+
+    function init() {
+        audioCtx = new AudioContext();
+    }
+
+    function play_buffer(data_buffer) {
+        if (!audioCtx) {
+            init();
+        }
+
+        frameCount = data_buffer.length;
+
+        const buffer = new AudioBuffer({
+            numberOfChannels: channels,
+            length: frameCount,
+            sampleRate: 44100,
+        });
+
+        // Fill the buffer
+
+        const nowBuffering = buffer.getChannelData(0);
+        for (let i = 0; i < frameCount; i++) {
+            nowBuffering[i] = data_buffer[i];
+        }
+
+        // Get an AudioBufferSourceNode.
+        // This is the AudioNode to use when we want to play an AudioBuffer
+        const source = audioCtx.createBufferSource();
+        // Set the buffer in the AudioBufferSourceNode
+        source.buffer = buffer;
+        // Connect the AudioBufferSourceNode to the
+        // destination so we can hear the sound
+        source.connect(audioCtx.destination);
+        // start the source playing
+        source.start();
+
+        source.onended = () => {
+            console.log("sound played.");
+            socket.emit('audio_back', "send");
+        };
+    };
+
+
+
+    // $(document).ready(function(){
+    //     lowLag.init({'urlPrefix':'plucks/'});
+    //     lowLag.load(['pluck.mp3','pluck.ogg'],'pluck1');
+    //     lowLag.load(['pluck2.mp3','pluck2.ogg'],'pluck2');
+    // });
+
+    // Setup socket connection
+    var socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
+        socket.on('connect', function () {
+            console.log("Connected...!", socket.connected)
+        });
+
+    FPS = 60
+    function start_streaming() {
+        console.log("start steaming!");
+        // setInterval(loop, 1000/FPS);
+        socket.emit('audio_back', "send");
+        get_data();
+    }
+
+    function get_data()
+    {
+        socket.on('audio_back', function (data) {
+            var audio_data = new Int16Array(data);
+            var audio_data = Float32Array.from(audio_data);
+            play_buffer(audio_data);
+        });
+    }
+
+</script>
+
+</html>
