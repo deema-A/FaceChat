@@ -82,8 +82,10 @@ def handle_audio(audioData: Dict[str, float]):
     global buffer
     global count
     global prev_score
-    chunk = list(audioData.values())
-    buffer.extend(audioData.values())
+    chunk = np.frombuffer(audioData, dtype=np.float32)
+
+    # chunk = list(audioData.values())
+    # buffer.extend(audioData.values())
 
     chunk = torch.FloatTensor(chunk) * 5.0
     speech_prob = vad.model(chunk, vad.sampleRate).item()
