@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Real Time Audio Play Test</title>
+
+    <style>
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.0/socket.io.js'></script>
+
+    <!-- <script src="{{ url_for('static', filename='js/lowLag.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/soundmanager2.js') }}"></script> -->
+    <!-- <script src="//code.jquery.com/jquery-1.8.0.min.js"></script> -->
+
+
+    <!-- RecordRTC -->
+    <!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
+</head>
+
+<body>
+
+    Test
+    <button type="button" id="play-button">Start</button>
+    <button type="button" id="stop-button">Stop</button>
+
+</body>
+
+<script>
+    // Setup socket connection
+    var socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
+    socket.on('connect', function () {
+        console.log("Connected...!", socket.connected)
+    });
+
+    const playButton = document.getElementById('play-button');
+    const stopButton = document.getElementById('stop-button');
+
+    const audioCtx = new AudioContext({
+        latencyHint: "interactive",
+        sampleRate: 44100,
+    });
+
+    // fetch('http://example.com/audio.mp3')
+    //     .then(response => response.arrayBuffer())
+    //     .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    //     .then(audioBuffer => {
+    //         // Create a buffer source
+    //         const bufferSource = audioContext.createBufferSource();
+    //         bufferSource.buffer = audioBuffer;
+
+    //         // Connect the buffer source to the audio context's destination
+    //         bufferSource.connect(audioContext.destination);
+
+    //         // Add an event listener to the play button to start the audio when pressed
+    //         playButton.addEventListener('click', () => {
+    //             bufferSource.start(0);
+    //         });
+    //     });
+
+    var source;
+
+    playButton.addEventListener('click', () => {
+        console.log("Play button clicked");
+        socket.emit('audio_request', 'play');
+
+        socket.on('audio_data', function (audio_data) {
+            source = audioCtx.createBufferSource();
+            console.log("Audio data received");
+            audioCtx.decodeAudioData(audio_data,
+                (buffer) => {
+                    source.buffer = buffer;
+                    source.connect(audioCtx.destination);
+                    source.start();
+                },
+                (err) => console.error(`Error with decoding audio data: ${err.err}`)
+            );
+        });
+
+        
+    });
+
+    stopButton.addEventListener('click', () => {
+        console.log("Stop button clicked");
+        source.stop();
+        source.disconnect(audioCtx.destination);
+        delete source;
+    });
+
+
+</script>
+
+</html>
