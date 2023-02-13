@@ -1,0 +1,1 @@
+The system is built on top of RealTimeAudioRecord
