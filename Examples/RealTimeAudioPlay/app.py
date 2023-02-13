@@ -2,10 +2,7 @@ from flask import Flask, Response, render_template, request
 from flask_socketio import SocketIO, emit
 import time
 import io
-from PIL import Image
-import base64, cv2
 import numpy as np
-from flask_cors import CORS, cross_origin
 from engineio.payload import Payload
 from werkzeug.utils import secure_filename
 import pickle

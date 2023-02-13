@@ -71,10 +71,10 @@ def image(data_image):
     # 12 ms
     obj = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
 
-    emotions, scores = zip(*obj['emotion'].items())
+    emotions, scores = zip(*obj[0]['emotion'].items())
     index = np.argmax(scores)
     pred_emotion = emotions[index]
-    x, y, w, h = obj['region'].values()
+    x, y, w, h = obj[0]['region'].values()
 
     if pred_emotion in emotions and (x > 0 and y > 0):
         # draw face box
@@ -199,7 +199,7 @@ def getMaskOfLips(img, points):
 if __name__ == '__main__':
     socketio.run(app,
                  host='0.0.0.0',
-                 port=9000,
+                 port=55511,
                  debug=True,
                  keyfile='key.pem',
                  certfile='cert.pem')
